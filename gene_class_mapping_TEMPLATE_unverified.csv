@@ -1,0 +1,5 @@
+gene_symbol,antibiotic_class,mapping_note
+blaTEM,Beta-lactams,Illustrative only; confirm allele/organism
+tetA,Tetracyclines,Illustrative only; confirm allele/organism
+ermB,Macrolides,Illustrative only; confirm allele/organism
+sul1,Sulfonamides,Illustrative only; confirm allele/organism
