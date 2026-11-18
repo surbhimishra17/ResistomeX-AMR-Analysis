@@ -73,6 +73,9 @@ class RealFiles(unittest.TestCase):
         self.assertFalse(g.presence["ResFinder"].any())
         self.assertEqual(g.pairwise[0]["shared (exact)"], 0)
         self.assertTrue(any("zero AMR genes" in n for n in g.notes))
+    def test_zero_hit_vs_hits_asks_to_confirm_same_assembly(self):
+        g = rc.compare_tools([self.a, self.r])[0]
+        self.assertTrue(any("same assembly" in w for w in g.warnings))
     def test_classes_not_invented(self):
         d = rc.harmonise_classes(rc.combine_runs([self.a]))
         got = dict(zip(d.gene_symbol, d.class_label))

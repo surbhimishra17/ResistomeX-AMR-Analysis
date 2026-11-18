@@ -209,13 +209,22 @@ t1, t2, t3, t4 = st.tabs([f"AMR genes ({len(amr_genes)})", f"AMR mutations / var
                           f"STRESS / VIRULENCE / other ({len(non_amr)})", "Gene-class summary"])
 cols = [c for c in SHOW_COLS if c in data.columns]
 with t1:
-    st.dataframe(amr_genes[cols], hide_index=True) if len(amr_genes) else st.info("None.")
+    if len(amr_genes):
+        st.dataframe(amr_genes[cols], hide_index=True)
+    else:
+        st.info("None.")
 with t2:
     st.caption("Point mutations and variant models are listed per tool and are not compared across tools.")
-    st.dataframe(amr_mut[cols], hide_index=True) if len(amr_mut) else st.info("None.")
+    if len(amr_mut):
+        st.dataframe(amr_mut[cols], hide_index=True)
+    else:
+        st.info("None.")
 with t3:
     st.caption("Not counted as AMR genes.")
-    st.dataframe(non_amr[cols], hide_index=True) if len(non_amr) else st.info("None.")
+    if len(non_amr):
+        st.dataframe(non_amr[cols], hide_index=True)
+    else:
+        st.info("None.")
 with t4:
     if amr_genes.empty:
         st.info("No AMR genes to summarise.")
@@ -240,7 +249,10 @@ for gcmp in comparisons:
         pres = gcmp.presence.copy()
         for t in gcmp.tools:
             pres[t] = pres[t].map({True: "✓", False: "–"})
-        st.dataframe(pres, hide_index=True) if len(pres) else st.info("No AMR genes reported by any compared tool.")
+        if len(pres):
+            st.dataframe(pres, hide_index=True)
+        else:
+            st.info("No AMR genes reported by any compared tool.")
         st.dataframe(pd.DataFrame(gcmp.pairwise), hide_index=True)
     for w in gcmp.warnings:
         st.warning(w)
@@ -248,7 +260,8 @@ for gcmp in comparisons:
         for n in gcmp.notes:
             st.write("• " + n)
     st.divider()
-st.caption("Exact matches use normalised symbols. 'Family-level only' means the allele/name differs and must be "
+st.caption("Genome compatibility is judged only from the organism and genome accession you entered; the app cannot verify the sequences. "
+           "Exact matches use normalised symbols. 'Family-level only' means the allele/name differs and must be "
            "checked manually. A gene missing from a narrower-scope tool is a scope difference, not proof of disagreement.")
 
 # ------------------------------------------------------------------ downloads

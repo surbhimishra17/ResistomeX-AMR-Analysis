@@ -752,6 +752,14 @@ def compare_tools(runs: List[ParsedRun]) -> List[ComparisonGroup]:
                 if not _contigs_overlap(contigs[a], contigs[b]):
                     g.warnings.append(f"{a} and {b} share no contig IDs; check that both ran on the same assembly.")
 
+        zero_tools = [t for t in g.tools if not sets[t]]
+        hit_tools = [t for t in g.tools if sets[t]]
+        if zero_tools and hit_tools:
+            g.warnings.append(
+                f"{', '.join(zero_tools)} reported zero AMR genes while {', '.join(hit_tools)} reported hits. "
+                "This can be a genuine scope difference, but it also happens when files come from different "
+                "assemblies. Zero-hit files contain no contig IDs, so the app cannot check this itself - "
+                "please confirm that all files for this isolate came from the same assembly.")
         rows = []
         for key in sorted(set().union(*[set(s) for s in sets.values()])):
             present = [t for t in g.tools if key in sets[t]]

@@ -53,14 +53,16 @@ organism and genome accession match. It is not a new detection method.
    "family-level only, verify manually" and are not counted as matches.
 4. Tools have different scopes (for example ResFinder acquired genes vs AMRFinderPlus), so a gene found by one tool
    and not another is not automatically a disagreement.
+5. If one tool reports zero hits and another reports hits, the app shows a caution to confirm that all files came from
+   the same assembly (zero-hit files have no contig IDs, so the app cannot check this itself).
 
 ## Testing status
 
 | What | Status |
 |---|---|
 | AMRFinderPlus and ResFinder output for *E. coli* K-12 MG1655 (GCF_000005845.2): 5 AMRFinderPlus rows (3 AMR, 2 STRESS) and a header-only ResFinder file | Tested on real files |
-| 35 automated tests (parsers, validation, comparison rules, report, app smoke test) | Pass. Most use small synthetic files with made-up gene names. |
-| App interface | Checked manually on the *E. coli* K-12 case only |
+| 38 automated tests (parsers, validation, comparison rules, report, app smoke test) | Pass. Most use small synthetic files with made-up gene names. |
+| App interface | Run manually on a small set of files. The automated app test uses a stub, not real Streamlit. |
 | Several organisms (*Klebsiella*, *Salmonella*) | Synthetic data only; no real output tested yet |
 | CARD/RGI and PointFinder parsers | Written from documented columns; not tested on real output |
 | Large files, many isolates, speed | Not tested |

@@ -57,6 +57,22 @@ def real(n):
     with open(os.path.join(FIX, n), "rb") as fh: return fh.read()
 
 class AppSmoke(unittest.TestCase):
+    def test_no_bare_ternary_statements(self):
+        """Streamlit 'magic' prints the value of a bare expression statement, which showed
+        'DeltaGenerator(...)' text on the page. No expression statement may be a ternary."""
+        import ast
+        tree = ast.parse(open(os.path.join(ROOT, "app.py"), encoding="utf-8").read())
+        bad = [n.lineno for n in ast.walk(tree) if isinstance(n, ast.Expr) and isinstance(n.value, ast.IfExp)]
+        self.assertEqual(bad, [])
+    def test_no_streamlit_magic_expressions(self):
+        """Streamlit 'magic' prints any bare expression statement. A conditional like
+        `st.dataframe(x) if c else st.info(y)` therefore shows ugly DeltaGenerator text on the page."""
+        import ast
+        with open(os.path.join(ROOT, "app.py"), encoding="utf-8") as fh:
+            tree = ast.parse(fh.read())
+        bad = [n.lineno for n in ast.walk(tree) if isinstance(n, ast.Expr)
+               and isinstance(n.value, (ast.IfExp, ast.Name, ast.Attribute, ast.Compare, ast.BoolOp, ast.Subscript))]
+        self.assertEqual(bad, [], f"bare expression statements at lines {bad}")
     def test_no_input_stops_cleanly(self):
         self.assertTrue(run_app().get("stopped"))
     def test_demo_mode(self):
